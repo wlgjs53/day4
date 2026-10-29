@@ -5,6 +5,7 @@ import { won } from '../lib/format.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import SetupNotice from '../components/SetupNotice.jsx';
+import AddToCartModal from '../components/AddToCartModal.jsx';
 
 export default function Shop() {
   const { user, configured } = useAuth();
@@ -14,6 +15,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(configured);
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
+  const [picked, setPicked] = useState(null); // 수량을 고르는 중인 상품
 
   useEffect(() => {
     if (!supabase) return;
@@ -28,16 +30,22 @@ export default function Shop() {
       });
   }, []);
 
-  const onAdd = async (product) => {
+  // 버튼을 누르면 바로 담지 않고 수량 선택 창을 먼저 보여줍니다.
+  const onAdd = (product) => {
     if (!user) {
       navigate('/login', { state: { from: '/shop' } });
       return;
     }
-    const ok = await add(product.id);
+    setPicked(product);
+  };
+
+  const onConfirm = async (quantity) => {
+    const ok = await add(picked.id, quantity);
     if (ok) {
-      setToast(`"${product.name}" 을(를) 장바구니에 담았어요`);
-      setTimeout(() => setToast(''), 2000);
+      setToast(`"${picked.name}" ${quantity}개를 장바구니에 담았어요`);
+      setTimeout(() => setToast(''), 2500);
     }
+    setPicked(null);
   };
 
   const inCart = (id) => items.find((i) => i.product_id === id)?.quantity ?? 0;
@@ -63,13 +71,22 @@ export default function Shop() {
               <div className="product-foot">
                 <strong className="price">{won(p.price)}</strong>
                 <button className="btn" onClick={() => onAdd(p)}>
-                  {inCart(p.id) ? `담기 (+1, 현재 ${inCart(p.id)})` : '장바구니 담기'}
+                  {inCart(p.id) ? `장바구니 담기 (현재 ${inCart(p.id)}개)` : '장바구니 담기'}
                 </button>
               </div>
             </div>
           </article>
         ))}
       </div>
+
+      {picked && (
+        <AddToCartModal
+          product={picked}
+          inCart={inCart(picked.id)}
+          onConfirm={onConfirm}
+          onClose={() => setPicked(null)}
+        />
+      )}
 
       {toast && (
         <div className="toast">

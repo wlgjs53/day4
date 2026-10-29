@@ -54,9 +54,10 @@ export function CartProvider({ children }) {
     return true;
   };
 
-  const add = (productId) => {
+  // 이미 담긴 수량에 quantity 만큼 더합니다 (최대 99개)
+  const add = (productId, quantity = 1) => {
     const current = items.find((i) => i.product_id === productId)?.quantity ?? 0;
-    return setQuantity(productId, current + 1);
+    return setQuantity(productId, current + quantity);
   };
 
   const remove = (productId) => setQuantity(productId, 0);
