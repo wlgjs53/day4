@@ -8,6 +8,8 @@ import Characters from './pages/Characters.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import MyPage from './pages/MyPage.jsx';
+import Shop from './pages/Shop.jsx';
+import Cart from './pages/Cart.jsx';
 
 export default function App() {
   return (
@@ -18,6 +20,15 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/characters" element={<Characters />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route

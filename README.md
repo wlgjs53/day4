@@ -12,8 +12,10 @@
 ```
 api/pixabay.js          Vercel 서버리스 함수 (Pixabay 프록시, 키는 서버에만)
 supabase/schema.sql     favorites 테이블 + RLS 정책
+supabase/shop.sql       products / cart_items 테이블 + RLS + 예시 상품
 src/context/            AuthContext(회원/로그인), FavoritesContext(즐겨찾기)
-src/pages/              Home, Gallery, Characters, Login, Signup, MyPage
+src/context/CartContext 장바구니 상태 (Supabase cart_items)
+src/pages/              Home, Gallery, Characters, Shop, Cart, Login, Signup, MyPage
 ```
 
 ## 환경변수 한눈에 보기
@@ -30,7 +32,10 @@ src/pages/              Home, Gallery, Characters, Login, Signup, MyPage
 
 1. https://supabase.com 에서 로그인 → **New project** 생성 (리전은 `Northeast Asia (Seoul)` 권장).
 2. **Project Settings → API** 에서 `Project URL` 과 `anon public` 키를 복사해 둡니다.
-3. **SQL Editor → New query** 에 `supabase/schema.sql` 전체를 붙여넣고 **Run** (즐겨찾기 테이블 생성).
+3. **SQL Editor → New query** 에 아래 두 파일의 내용을 **각각** 붙여넣고 **Run**(또는 `Ctrl+Enter`) 하세요.
+   - `supabase/schema.sql` : 즐겨찾기 테이블
+   - `supabase/shop.sql` : 상품·장바구니 테이블 + 예시 상품 6개
+   (둘 다 여러 번 실행해도 안전합니다.)
 4. **Authentication → Providers → Email** 확인
    - 개발 중에 바로 로그인하고 싶으면 **Confirm email** 을 끄세요.
    - 켜 두면 가입 후 메일 인증을 해야 로그인됩니다. (무료 플랜은 메일 발송 횟수 제한이 있어요.)
@@ -93,3 +98,10 @@ git push -u origin main
 
 Pixabay 사진은 Pixabay 라이선스를 따릅니다. 이 사이트는 사진 출처와 촬영자를 함께 표시합니다.
 Pixabay 이용 약관상 서비스 규모가 커지면 이미지를 직접 내려받아 자체 호스팅하는 것을 권장합니다.
+
+## 상품 수정하기
+
+Supabase → **Table Editor → products** 에서 행을 직접 수정/추가/삭제하세요. 코드 수정이나 재배포는 필요 없어요.
+- `price`: 원 단위 정수
+- `image_url`: 상품 사진 주소(비워 두면 `emoji` 가 대신 표시됨)
+- `is_active`: `false` 로 바꾸면 상점에서 숨겨짐

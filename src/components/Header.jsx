@@ -1,8 +1,10 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useCart } from '../context/CartContext.jsx';
 
 export default function Header() {
   const { user, signOut } = useAuth();
+  const { count } = useCart();
   const navigate = useNavigate();
   const name = user?.user_metadata?.name || user?.email?.split('@')[0];
 
@@ -20,6 +22,10 @@ export default function Header() {
         <nav className="nav">
           <NavLink to="/gallery">갤러리</NavLink>
           <NavLink to="/characters">제주 캐릭터</NavLink>
+          <NavLink to="/shop">상점</NavLink>
+          <NavLink to="/cart" className="cart-link">
+            🛒{count > 0 && <span className="badge">{count}</span>}
+          </NavLink>
           {user ? (
             <>
               <NavLink to="/mypage">{name}님</NavLink>
